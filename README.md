@@ -1,6 +1,8 @@
 # AVT-5140 Scratch
 Java web server that allow to program AVT-5140 in Scratch
 
+![Screenshot](https://raw.githubusercontent.com/SebastianCelejewski/AVT-5140-Scratch/master/documentation/AVT-5140%20in%20Scratch.PNG)
+
 ## Links
 
 - Drivers and simple diagnostics program: http://serwis.avt.pl/files/AVT5140.zip
