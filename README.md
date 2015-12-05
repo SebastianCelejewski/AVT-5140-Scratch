@@ -1,4 +1,4 @@
-# AVT-5140-stratch
+# AVT-5140 Scratch
 Java web server that allow to program AVT-5140 in Scratch
 
 ## Links
