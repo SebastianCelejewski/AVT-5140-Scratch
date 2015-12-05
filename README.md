@@ -24,10 +24,10 @@ Java web server that allow to program AVT-5140 in Scratch
  
 ## Build
 
-cd Avt5140Driver
-mvn clean install
-cd ../Avt5140Server
-mvn clean install assembly:assembly
+- cd Avt5140Driver
+- mvn clean install
+- cd ../Avt5140Server
+- mvn clean install assembly:assembly
 
 ## Run and test
 
