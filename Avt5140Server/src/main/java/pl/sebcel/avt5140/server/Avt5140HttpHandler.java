@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +23,7 @@ public class Avt5140HttpHandler implements HttpHandler {
 
     private Avt5140Server avt5140Server;
     private Avt5140Driver avt5140Driver;
+    private Set<String> connectedClients = new HashSet<String>();
 
     public Avt5140HttpHandler(Avt5140Server avt5140Server, Avt5140Driver avt5140Driver) {
         this.avt5140Server = avt5140Server;
@@ -29,8 +32,19 @@ public class Avt5140HttpHandler implements HttpHandler {
 
     public void handle(HttpExchange t) throws IOException {
         try {
-            log.debug("Handle " + t.getRequestURI() + " from " + t.getRemoteAddress().getHostName());
             String path = t.getRequestURI().getPath();
+            String remoteAddress = t.getRemoteAddress().getHostName();
+
+            if (path.equals("/poll")) {
+                if (!connectedClients.contains(remoteAddress)) {
+                    log.info("Registered client: "+remoteAddress);
+                    connectedClients.add(remoteAddress);
+                }
+                returnString(t, "OK", true);
+                return;
+            }
+
+            log.debug("Handle " + t.getRequestURI() + " from " + remoteAddress);
 
             if (path.equals("/scratch")) {
                 returnFile(t, "/avt-5140-extension.json");
@@ -61,14 +75,16 @@ public class Avt5140HttpHandler implements HttpHandler {
                 message = "AVT-5140 is not initialized";
             }
 
-            returnString(t, message);
+            returnString(t, message, false);
         } catch (Exception ex) {
             returnError(t, ex);
         }
     }
 
-    private void returnString(HttpExchange t, String message) throws IOException {
-        log.debug("Returning " + message);
+    private void returnString(HttpExchange t, String message, boolean quiet) throws IOException {
+        if (!quiet) {
+            log.debug("Returning " + message);
+        }
         byte[] messageBytes = message.getBytes();
         t.sendResponseHeaders(200, messageBytes.length);
         t.setAttribute("Content-Type", "text/html");
