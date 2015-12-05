@@ -31,10 +31,10 @@ public class Avt5140HttpHandler implements HttpHandler {
             }
 
             if (avt5140Server.isInitialized()) {
-                if (path.contains("/0/on")) {
+                if (path.contains("/on/0")) {
                     avt5140Driver.write(0, true);
                 }
-                if (path.contains("/0/off")) {
+                if (path.contains("/off/0")) {
                     avt5140Driver.write(0, false);
                 }
             }
