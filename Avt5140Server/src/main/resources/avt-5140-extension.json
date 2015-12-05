@@ -1,0 +1,9 @@
+{
+    "extensionName": "AVT-5140",
+    "extensionPort": 8000,
+    "useHTTP": true,
+    "blockSpecs": [
+        [" ", "Turn on %s", "on", "0"],
+        [" ", "Turn off %s", "off", "0"]
+    ]
+}
