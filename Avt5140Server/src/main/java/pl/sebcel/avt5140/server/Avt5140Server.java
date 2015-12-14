@@ -5,6 +5,7 @@ import java.net.InetSocketAddress;
 import org.apache.log4j.Logger;
 
 import pl.sebcel.avt5140.driver.Avt5140Driver;
+import pl.sebcel.avt5140.server.utils.MorseEncoder;
 
 import com.sun.net.httpserver.HttpServer;
 
@@ -15,6 +16,7 @@ public class Avt5140Server {
 
     private Avt5140Driver driver = new Avt5140Driver();
     private Avt5140HttpHandler httpHandler;
+    private MorseEncoder morseEncoder;
     private boolean isInitialized = false;
 
     public static void main(String[] args) {
@@ -33,7 +35,8 @@ public class Avt5140Server {
             log.warn("Failed to initialize AVT-5140 driver: " + ex.getMessage(), ex);
         }
 
-        httpHandler = new Avt5140HttpHandler(this, driver);
+        morseEncoder = new MorseEncoder();
+        httpHandler = new Avt5140HttpHandler(this, driver, morseEncoder);
 
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
