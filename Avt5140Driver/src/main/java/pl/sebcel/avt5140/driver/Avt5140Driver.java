@@ -14,6 +14,10 @@ public class Avt5140Driver {
 
     private final static Logger log = Logger.getLogger(Avt5140Driver.class);
 
+    public static enum PortType {
+        INPUT, OUTPUT
+    };
+
     private SerialPort serialPort;
     private PrintWriter out;
     private SerialReader reader;
@@ -38,7 +42,6 @@ public class Avt5140Driver {
             InputStream is = serialPort.getInputStream();
             out = new PrintWriter(os);
             reader = new SerialReader(is);
-            reader.setQuiet(true);
             (new Thread(reader)).start();
 
             log.info("Resetting controller");
@@ -80,6 +83,31 @@ public class Avt5140Driver {
             and(~bitmask);
         }
     }
+    
+    public void read() {
+        String command = "PINB ?";
+        log.debug(command);
+        out.println(command);
+        out.flush();
+    }
+
+    public void setPortType(int portIdx, PortType portType) {
+        log.debug("Setting pin " + portIdx + " to " + portType);
+        int bitmask = 1 << portIdx;
+        if (portType == PortType.INPUT) {
+            String string = hex(bitmask);
+            String command = string + " DDRB |";
+            log.debug(command);
+            out.println(command);
+            out.flush();
+        } else {
+            String string = hex(~bitmask);
+            String command = string + " DDRB &";
+            log.debug(command);
+            out.println(command);
+            out.flush();
+        }
+    }
 
     private void or(int value) {
         String string = hex(value);
@@ -101,6 +129,9 @@ public class Avt5140Driver {
         String string = Integer.toHexString(value);
         if (string.length() == 1) {
             string = "0" + string;
+        }
+        if (string.length() > 2) {
+            string = string.substring(string.length()-2);
         }
         return string;
     }
